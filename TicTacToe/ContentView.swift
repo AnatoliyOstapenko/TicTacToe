@@ -15,22 +15,31 @@ struct ContentView: View {
         GridItem(.flexible())
     ]
     
+    @State private var moves: [Move?] = Array(repeating: nil, count: 9)
+    @State private var isHumansTurn = true
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
                 Spacer()
                 LazyVGrid(columns: columns, spacing: 8) {
-                    ForEach(0..<9) { _ in
+                    ForEach(0..<9) { index in
                         ZStack {
                             Rectangle()
                                 .frame(width: geometry.size.width/3.5,
                                        height: geometry.size.width/3.5)
                                 .foregroundColor(.red).opacity(0.5)
                                 .cornerRadius(20)
-                            Image(systemName: player.indicator)
+                            Image(systemName: moves[index]?.indicator ?? "")
                                 .resizable()
                                 .frame(width: 40, height: 40)
                                 .foregroundColor(.white)
+                        }
+                        .onTapGesture {
+                            moves[index] = Move(player: isHumansTurn ? .human : .computer, boardIndex: index)
+                            isHumansTurn.toggle()
+                            moves.forEach{print($0?.indicator ?? "nothing")}
+                            print("end...\n")
                         }
                     }
                 }

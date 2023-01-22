@@ -16,7 +16,6 @@ struct ContentView: View {
     ]
     
     @State private var moves: [Move?] = Array(repeating: nil, count: 9)
-    @State private var isHumansTurn = true
     
     var body: some View {
         GeometryReader { geometry in
@@ -36,10 +35,8 @@ struct ContentView: View {
                                 .foregroundColor(.white)
                         }
                         .onTapGesture {
-                            moves[index] = Move(player: isHumansTurn ? .human : .computer, boardIndex: index)
-                            isHumansTurn.toggle()
-                            moves.forEach{print($0?.indicator ?? "nothing")}
-                            print("end...\n")
+                            if isSquareOccupied(moves, index) { return } /// return from closure if element in Array has been already exist
+                            moves[index] = Move(player: .human, boardIndex: index)
                         }
                     }
                 }
@@ -47,6 +44,24 @@ struct ContentView: View {
             }
             .padding()
         }
+    }
+    
+    private func isSquareOccupied(_ moves: [Move?], _ index: Int) -> Bool {
+        return moves.contains(where: {$0?.boardIndex == index})
+    }
+    
+    private func determineComputerMovePosition(_ moves: [Move?]) -> Int {
+        var movePosition = Int.random(in: Constants.range)
+        
+        while isSquareOccupied(moves, movePosition) {
+            movePosition = Int.random(in: Constants.range)
+        }
+        return movePosition
+    }
+    
+    private func checking() {
+        // check on win condition or draw
+        
     }
 }
 

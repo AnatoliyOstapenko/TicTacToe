@@ -8,14 +8,47 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    private let columns: [GridItem] = [
+        GridItem(.flexible()),
+        GridItem(.flexible()),
+        GridItem(.flexible())
+    ]
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        GeometryReader { geometry in
+            VStack {
+                Spacer()
+                LazyVGrid(columns: columns, spacing: 8) {
+                    ForEach(0..<9) { _ in
+                        ZStack {
+                            Rectangle()
+                                .frame(width: geometry.size.width/3.5,
+                                       height: geometry.size.width/3.5)
+                                .foregroundColor(.red).opacity(0.5)
+                                .cornerRadius(20)
+                            Image(systemName: player.indicator)
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                                .foregroundColor(.white)
+                        }
+                    }
+                }
+                Spacer()
+            }
+            .padding()
         }
-        .padding()
+    }
+}
+
+enum Player { case human, computer }
+
+struct Move {
+    let player: Player
+    let boardIndex: Int
+    
+    var indicator: String {
+        return player == .human ? "xmark" : "circle"
     }
 }
 

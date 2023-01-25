@@ -30,7 +30,7 @@ struct ContentView: View {
                                        height: geometry.size.width/3.5)
                                 .foregroundColor(.red).opacity(0.5)
                                 .cornerRadius(20)
-                            Image(systemName: moves[index]?.indicator ?? "")
+                            Image(systemName: moves[index]?.indicator ?? " ")
                                 .resizable()
                                 .frame(width: 40, height: 40)
                                 .foregroundColor(.white)
@@ -39,13 +39,22 @@ struct ContentView: View {
                             /// return from closure if element in Array has been already exist
                             if isSquareOccupied(moves, index) { return }
                             moves[index] = Move(player: .human, boardIndex: index)
-                            /// when isGameboardDisabled it's activate disabled reactively
+                            /// when isGameboardDisabled it's activate disabled till computer make it's turn
                             isGameboardDisabled = true
-                            /// check on win condition or draw
+                            
+                            // check on win condition or draw
+                            if checkWinCondition(player: .human, moves: moves) {
+                                print("Human Wins")
+                            }
+                            
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 let computerPosition = determineComputerMovePosition(moves)
                                 moves[computerPosition] = Move(player: .computer, boardIndex: computerPosition)
                                 isGameboardDisabled = false
+                                
+                                if self.checkWinCondition(player: .computer, moves: moves) {
+                                    print("Computer Wins")
+                                }
                             }
                         }
                     }
@@ -68,6 +77,18 @@ struct ContentView: View {
             movePosition = Int.random(in: Constants.range)
         }
         return movePosition
+    }
+    
+    private func checkWinCondition(player: Player, moves: [Move?]) -> Bool {
+        /// filtering every objects (elements) from moves depending on player or computer was chosen
+        let playerMoves = moves.compactMap {$0}.filter {$0.player == player}
+        /// map all indexes of player
+        let playerPositions = Set(playerMoves.map {$0.boardIndex})
+        print("playerPositions: \(playerPositions)")
+        
+        /// check if any nested Set from winPattern == playerPositions
+        for pattern in Constants.winPattern where pattern.isSubset(of: playerPositions) { return true }
+        return false
     }
 }
 

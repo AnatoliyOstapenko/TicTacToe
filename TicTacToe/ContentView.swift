@@ -17,6 +17,7 @@ struct ContentView: View {
     
     @State private var moves: [Move?] = Array(repeating: nil, count: 9)
     @State private var isGameboardDisabled = false
+    @State private var alertItem: AlertItem?
     
     var body: some View {
         GeometryReader { geometry in
@@ -39,21 +40,32 @@ struct ContentView: View {
                             /// return from closure if element in Array has been already exist
                             if isSquareOccupied(moves, index) { return }
                             moves[index] = Move(player: .human, boardIndex: index)
+
+                            /// check on win condition or draw
+                            if checkWinCondition(player: .human, moves: moves) {
+                                alertItem = AlertContect.humanWin
+                                return
+                            }
+                            if checkForDraw(moves: moves) {
+                                alertItem = AlertContect.draw
+                                return
+                            }
+                            
                             /// when isGameboardDisabled it's activate disabled till computer make it's turn
                             isGameboardDisabled = true
-                            
-                            // check on win condition or draw
-                            if checkWinCondition(player: .human, moves: moves) {
-                                print("Human Wins")
-                            }
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 let computerPosition = determineComputerMovePosition(moves)
                                 moves[computerPosition] = Move(player: .computer, boardIndex: computerPosition)
                                 isGameboardDisabled = false
-                                
+                                /// check on win condition or draw
                                 if self.checkWinCondition(player: .computer, moves: moves) {
-                                    print("Computer Wins")
+                                    alertItem = AlertContect.computerWin
+                                    return
+                                }
+                                if checkForDraw(moves: moves) {
+                                    alertItem = AlertContect.draw
+                                    return
                                 }
                             }
                         }
@@ -63,6 +75,11 @@ struct ContentView: View {
             }
             .disabled(isGameboardDisabled) /// disable -  able interaction user with view
             .padding()
+            .alert(item: $alertItem) { alertItem in
+                Alert(title: alertItem.title,
+                      message: alertItem.message,
+                      dismissButton: .default(alertItem.buttonTitle, action: { resetGame() }))
+            }
         }
     }
     
@@ -79,16 +96,24 @@ struct ContentView: View {
         return movePosition
     }
     
+    private func checkForDraw(moves: [Move?]) -> Bool {
+        return moves.compactMap {$0}.count == 9 /// true if the all cells are occupied
+    }
+    
     private func checkWinCondition(player: Player, moves: [Move?]) -> Bool {
         /// filtering every objects (elements) from moves depending on player or computer was chosen
         let playerMoves = moves.compactMap {$0}.filter {$0.player == player}
+        
         /// map all indexes of player
         let playerPositions = Set(playerMoves.map {$0.boardIndex})
-        print("playerPositions: \(playerPositions)")
         
         /// check if any nested Set from winPattern == playerPositions
         for pattern in Constants.winPattern where pattern.isSubset(of: playerPositions) { return true }
         return false
+    }
+    
+    private func resetGame() {
+        moves = Array(repeating: nil, count: 9)
     }
 }
 

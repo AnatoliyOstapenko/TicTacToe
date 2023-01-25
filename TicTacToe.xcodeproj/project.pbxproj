@@ -12,6 +12,7 @@
 		BC58A39D297D6D1F0017D2C5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC58A39C297D6D1F0017D2C5 /* Assets.xcassets */; };
 		BC58A3A0297D6D1F0017D2C5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC58A39F297D6D1F0017D2C5 /* Preview Assets.xcassets */; };
 		BC58A3A7297DBEF30017D2C5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC58A3A6297DBEF20017D2C5 /* Constants.swift */; };
+		BC58A4C82981AEBF0017D2C5 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC58A4C72981AEBE0017D2C5 /* Alerts.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +22,7 @@
 		BC58A39C297D6D1F0017D2C5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BC58A39F297D6D1F0017D2C5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BC58A3A6297DBEF20017D2C5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		BC58A4C72981AEBE0017D2C5 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				BC58A398297D6D1C0017D2C5 /* TicTacToeApp.swift */,
+				BC58A4C72981AEBE0017D2C5 /* Alerts.swift */,
 				BC58A39A297D6D1C0017D2C5 /* ContentView.swift */,
 				BC58A3A6297DBEF20017D2C5 /* Constants.swift */,
 				BC58A39C297D6D1F0017D2C5 /* Assets.xcassets */,
@@ -142,6 +145,7 @@
 			files = (
 				BC58A39B297D6D1C0017D2C5 /* ContentView.swift in Sources */,
 				BC58A399297D6D1C0017D2C5 /* TicTacToeApp.swift in Sources */,
+				BC58A4C82981AEBF0017D2C5 /* Alerts.swift in Sources */,
 				BC58A3A7297DBEF30017D2C5 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

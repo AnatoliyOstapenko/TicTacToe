@@ -16,6 +16,7 @@ struct ContentView: View {
     ]
     
     @State private var moves: [Move?] = Array(repeating: nil, count: 9)
+    @State private var isGameboardDisabled = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -35,13 +36,23 @@ struct ContentView: View {
                                 .foregroundColor(.white)
                         }
                         .onTapGesture {
-                            if isSquareOccupied(moves, index) { return } /// return from closure if element in Array has been already exist
+                            /// return from closure if element in Array has been already exist
+                            if isSquareOccupied(moves, index) { return }
                             moves[index] = Move(player: .human, boardIndex: index)
+                            /// when isGameboardDisabled it's activate disabled reactively
+                            isGameboardDisabled = true
+                            /// check on win condition or draw
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                let computerPosition = determineComputerMovePosition(moves)
+                                moves[computerPosition] = Move(player: .computer, boardIndex: computerPosition)
+                                isGameboardDisabled = false
+                            }
                         }
                     }
                 }
                 Spacer()
             }
+            .disabled(isGameboardDisabled) /// disable -  able interaction user with view
             .padding()
         }
     }
@@ -57,11 +68,6 @@ struct ContentView: View {
             movePosition = Int.random(in: Constants.range)
         }
         return movePosition
-    }
-    
-    private func checking() {
-        // check on win condition or draw
-        
     }
 }
 

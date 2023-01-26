@@ -27,11 +27,10 @@ struct ContentView: View {
                     ForEach(0..<9) { index in
                         ZStack {
                             Rectangle()
-                                .frame(width: geometry.size.width/3.5,
-                                       height: geometry.size.width/3.5)
+                                .frame(width: geometry.size.width/3.5, height: geometry.size.width/3.5)
                                 .foregroundColor(.red).opacity(0.5)
                                 .cornerRadius(20)
-                            Image(systemName: moves[index]?.indicator ?? " ")
+                            Image(systemName: moves[index]?.indicator ?? "")
                                 .resizable()
                                 .frame(width: 40, height: 40)
                                 .foregroundColor(.white)
@@ -73,7 +72,7 @@ struct ContentView: View {
                 }
                 Spacer()
             }
-            .disabled(isGameboardDisabled) /// disable -  able interaction user with view
+            .disabled(isGameboardDisabled) /// disable -  able user interaction with view
             .padding()
             .alert(item: $alertItem) { alertItem in
                 Alert(title: alertItem.title,
@@ -88,6 +87,48 @@ struct ContentView: View {
     }
     
     private func determineComputerMovePosition(_ moves: [Move?]) -> Int {
+        
+        // if AI can win, then win (the case, when remain 1 step to win for computer)
+        
+        /// filtering every nested objects which computer was chosen
+        let computerMoves = moves.compactMap {$0}.filter {$0.player == .computer}
+        /// map all indexes of computer
+        let computerPositions = Set(computerMoves.map {$0.boardIndex})
+        
+        for pattern in Constants.winPattern {
+            /// subtacting (delete) elements from nested Sets
+            let winPosition = pattern.subtracting(computerPositions)
+
+            if winPosition.count == 1 {
+                // check if the last element
+                let isAvailable = !isSquareOccupied(moves, winPosition[winPosition.startIndex])
+                /// another way to get first element from Set is winPosition.first!
+                if isAvailable { return winPosition[winPosition.startIndex] }
+            }
+        }
+        
+        // if AI can win, then block (the case, when remain 1 step to win for human)
+        
+        let playerMoves = moves.compactMap {$0}.filter {$0.player == .human}
+        /// map all indexes of computer
+        let playerPositions = Set(playerMoves.map {$0.boardIndex})
+        
+        for pattern in Constants.winPattern {
+            /// subtacting (delete) elements from nested Sets
+            let winPosition = pattern.subtracting(playerPositions)
+            print("winPosition: \(winPosition)")
+            if winPosition.count == 1 {
+                // check if the last element
+                let isAvailable = !isSquareOccupied(moves, winPosition[winPosition.startIndex])
+                /// another way to get first element from Set is winPosition.first!
+                if isAvailable { return winPosition[winPosition.startIndex] }
+            }
+        }
+        
+        // if AI can't block, then take a middle square #4
+        if !isSquareOccupied(moves, 4) { return 4 }
+        
+        // if AI can't take the midle square, take random available square
         var movePosition = Int.random(in: Constants.range)
         
         while isSquareOccupied(moves, movePosition) {

@@ -125,8 +125,25 @@ struct ContentView: View {
             }
         }
         
-        // if AI can't block, then take a middle square #4
-        if !isSquareOccupied(moves, 4) { return 4 }
+        /// if AI can't block, then take a middle square #4
+        if !isSquareOccupied(moves, 4) {
+            return 4
+
+            /// Add block which make AI invincible. Start block ->
+        } else if playerPositions.contains(4) {
+            let corners: Set<Int> = [0,2,6,8]
+            for item in corners {
+                let availableCorner = !isSquareOccupied(moves, item)
+                if availableCorner { return item }
+            }
+        } else {
+            let cross: Set<Int> = [1,3,5,7]
+            for item in cross {
+                let availableCorner = !isSquareOccupied(moves, item)
+                if availableCorner { return item }
+            }
+        }
+        ///  -> End block
         
         // if AI can't take the midle square, take random available square
         var movePosition = Int.random(in: Constants.range)
